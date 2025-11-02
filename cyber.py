@@ -889,7 +889,7 @@ class Game:
         return tile_type != TileType.WALL
 
     def guard_cost(self, pos, tile_type):
-        return 2.0 if tile_type == TileType.DOOR else 1.0
+        return 1.2 if tile_type == TileType.DOOR else 1.0
 
     def build_patrol_targets(self, g: Guard):
         if not g.patrol_route:
