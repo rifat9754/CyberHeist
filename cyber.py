@@ -33,6 +33,7 @@ COLS, ROWS = WIDTH // TILE, HEIGHT // TILE
 FPS = 60
 
 # Colors
+<<<<<<< HEAD
 BLACK  = (15, 18, 22)
 DARK   = (26, 30, 34)
 MID    = (45, 50, 57)
@@ -45,6 +46,23 @@ GREEN  = (140, 220, 140)
 PURPLE = (200, 140, 255)
 ACCENT = (82, 220, 200)  # thief body
 BOX_COL = (90, 140, 90)  # decorative boxes
+=======
+BLACK   = (15, 18, 22)
+DARK    = (26, 30, 34)      
+MID     = (45, 50, 57)     
+LIGHT   = (200, 220, 240)
+RED     = (240, 84, 84)
+YELLOW  = (250, 224, 120)
+ORANGE  = (255, 170, 70)
+BLUE    = (120, 180, 255)
+GREEN   = (140, 220, 140)
+PURPLE  = (200, 140, 255)
+ACCENT  = (82, 220, 200)  
+BOX_COL = (90, 140, 90)    
+
+
+DOOR_COL = (255, 140, 90)  #
+>>>>>>> 6d33e3b (Update)
 
 # Thief timings / decisions
 THIEF_REPLAN_SECONDS = 0.6
@@ -98,15 +116,24 @@ class TileType:
     FLOOR    = 0
     WALL     = 1
     DOOR     = 2
+<<<<<<< HEAD
     BOX      = 3   # decorative only (used to visualize old terminals; no logic)
+=======
+    BOX      = 3
+>>>>>>> 6d33e3b (Update)
     EXIT     = 4
 
 @dataclass
 class Room:
     id: int
     rect: pygame.Rect
+<<<<<<< HEAD
     type: str   # 'regular' | 'security' | 'vault' | 'utility'
     value: int  # used by GUARDS (their search heuristic); Thief won't peek this.
+=======
+    type: str
+    value: int
+>>>>>>> 6d33e3b (Update)
 
 @dataclass
 class NoisePing:
@@ -251,10 +278,13 @@ def ensure_room_entrance(grid, room, doors_list):
     doors_list.append((dx, dy))
 
 def generate_world():
+<<<<<<< HEAD
     """
     Return: grid, rooms, doors, boxes, exits
     (No terminals/cameras; only decorative BOX tiles)
     """
+=======
+>>>>>>> 6d33e3b (Update)
     grid = empty_grid()
     rooms = []
 
@@ -394,8 +424,13 @@ def guard_can_see_thief(grid, guard: Guard, thief: ThiefAI):
     px, py = thief.tile()
     if heuristic((gx, gy), (px, py)) > GUARD_VIEW_DIST:
         return False, 0.0
+    
     if not los(grid, (gx, gy), (px, py)):
         return False, 0.0
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 6d33e3b (Update)
     fx, fy = guard.facing
     vx, vy = px - gx, py - gy
     vlen = math.hypot(vx, vy) + 1e-5
@@ -421,7 +456,10 @@ def fuzzy_suspicion(guard: Guard, saw: bool, sight_conf: float, local_noise: flo
     return GuardState.PATROL
 
 def heuristic_room_score(room: Room, lkp: tuple | None, exits, noise_map):
+<<<<<<< HEAD
     # (Used by GUARDS only; unchanged from your version)
+=======
+>>>>>>> 6d33e3b (Update)
     if lkp is None:
         dist_term = 8.0
     else:
@@ -477,18 +515,24 @@ def plan_blockade(grid, lkp, exits):
 # =============================================================================
 class Game:
     def __init__(self):
-        # Pygame setup
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+<<<<<<< HEAD
         pygame.display.set_caption("Cyber Heist — AI vs AI (Prototype) [Thief explores unknown Vault]")
+=======
+        pygame.display.set_caption("Cyber Heist")
+>>>>>>> 6d33e3b (Update)
         self.clock = pygame.time.Clock()
+
         self.font = pygame.font.SysFont("consolas", 16)
         self.big  = pygame.font.SysFont("consolas", 22)
 
+<<<<<<< HEAD
         # Build world (with decorative boxes)
+=======
+>>>>>>> 6d33e3b (Update)
         self.grid, self.rooms, self.doors, self.boxes, self.exits = generate_world()
 
-        # Thief spawns at any boundary EXIT (create one if list is empty)
         if self.exits:
             spawn = RNG.choice(self.exits)
         else:
@@ -498,7 +542,6 @@ class Game:
             spawn = (x, y)
         self.thief = ThiefAI(*spawn)
 
-        # Shared blackboard
         self.blackboard = Blackboard()
 
         # Guards near centers of rooms with simple perimeter patrols
@@ -535,14 +578,19 @@ class Game:
     # ----------------------- Patrol route for one room ------------------------
     def build_patrol(self, room: Room):
         route = []
+
         for x in range(room.rect.left + 2, room.rect.right - 2, 4):
             route.append((x, room.rect.top + 2))
+
         for y in range(room.rect.top + 2, room.rect.bottom - 2, 4):
             route.append((room.rect.right - 3, y))
+
         for x in range(room.rect.right - 3, room.rect.left + 1, -4):
             route.append((x, room.rect.bottom - 3))
+
         for y in range(room.rect.bottom - 3, room.rect.top + 1, -4):
             route.append((room.rect.left + 2, y))
+
         if not route:
             route = [(room.rect.centerx, room.rect.centery)]
         return route
@@ -552,8 +600,13 @@ class Game:
         return tile_type != TileType.WALL
 
     def thief_cost(self, pos, tile_type):
+<<<<<<< HEAD
         # No camera cost; only door has a small extra cost to make routes a bit natural.
         if tile_type == TileType.DOOR:   return 1.3
+=======
+        if tile_type == TileType.DOOR:
+            return 1.3
+>>>>>>> 6d33e3b (Update)
         return 1.0
 
     def tile_inside_room(self, room: Room):
@@ -567,7 +620,10 @@ class Game:
         return (cx, cy)
 
     def room_id_at(self, pos):
+<<<<<<< HEAD
         """Return the room.id that contains pos (x,y), else None."""
+=======
+>>>>>>> 6d33e3b (Update)
         x, y = pos
         for r in self.rooms:
             if r.rect.collidepoint(x, y):
@@ -575,6 +631,7 @@ class Game:
         return None
 
     def pick_next_room_like_human(self):
+<<<<<<< HEAD
         """
         Choose next unexplored room WITHOUT peeking at r.type or r.value.
         Heuristic (human-ish guess):
@@ -583,11 +640,16 @@ class Game:
           - prefer rooms closer to current thief position
           - add a tiny random jitter
         """
+=======
+>>>>>>> 6d33e3b (Update)
         unexplored = [r for r in self.rooms if r.id not in self.thief.memory.explored_room_ids]
         if not unexplored:
             return None
 
+<<<<<<< HEAD
         # Precompute factors
+=======
+>>>>>>> 6d33e3b (Update)
         tx, ty = self.thief.tile()
         def exit_distance_score(r):
             if not self.exits: return 0
@@ -600,24 +662,35 @@ class Game:
             area = r.rect.width * r.rect.height
             d_exit = exit_distance_score(r)
             d_thief = heuristic((tx, ty), center)
+<<<<<<< HEAD
             # lower score = more attractive
             score = (
                 0.6 * (d_thief / 10.0) +      # closer to thief
                 0.5 * (d_exit / 15.0)  -      # closer to exit
                 0.8 * (area / 300.0)   +      # larger room
                 RNG.random() * 0.15            # small randomness
+=======
+            score = (
+                0.6 * (d_thief / 10.0) +    # closer to thief
+                0.5 * (d_exit / 15.0)  -    # closer to exit
+                0.8 * (area / 300.0)   +    # larger room
+                RNG.random() * 0.15          # small randomness
+>>>>>>> 6d33e3b (Update)
             )
             scored.append((score, r))
         scored.sort(key=lambda t: t[0])
         return scored[0][1]
 
     def plan_thief(self):
+<<<<<<< HEAD
         """
         If carrying loot -> plan to nearest Exit.
         If not carrying:
           - If no target_room_id or target finished -> pick a new unexplored room (human-like heuristic).
           - Plan path to inside that room.
         """
+        if self.thief.carrying_value > 0:
+=======
         if self.thief.carrying_value > 0:
             best_path = []
             for ex in self.exits:
@@ -626,6 +699,36 @@ class Game:
                 if p and (not best_path or len(p) < len(best_path)):
                     best_path = p
             self.thief.path = best_path
+            self.thief.last_plan = self.time
+            return
+
+        target_room = None
+        if self.thief.memory.target_room_id is not None:
+            candidates = [r for r in self.rooms if r.id == self.thief.memory.target_room_id]
+            if candidates and candidates[0].id not in self.thief.memory.explored_room_ids:
+                target_room = candidates[0]
+
+        if target_room is None:
+            target_room = self.pick_next_room_like_human()
+            if target_room:
+                self.thief.memory.target_room_id = target_room.id
+
+        if target_room:
+            goal = self.tile_inside_room(target_room)
+            self.thief.path = astar(
+                self.grid, self.thief.tile(), goal,
+                passable=self.passable_for_thief, cost_fn=self.thief_cost
+            )
+        else:
+>>>>>>> 6d33e3b (Update)
+            best_path = []
+            for ex in self.exits:
+                p = astar(self.grid, self.thief.tile(), ex,
+                          passable=self.passable_for_thief, cost_fn=self.thief_cost)
+                if p and (not best_path or len(p) < len(best_path)):
+                    best_path = p
+            self.thief.path = best_path
+<<<<<<< HEAD
             self.thief.last_plan = self.time
             return
 
@@ -657,25 +760,38 @@ class Game:
                 if p and (not best_path or len(p) < len(best_path)):
                     best_path = p
             self.thief.path = best_path
+=======
+>>>>>>> 6d33e3b (Update)
 
         self.thief.last_plan = self.time
 
     def thief_hack_if_beneficial(self):
+<<<<<<< HEAD
         """
         Only doors can be hacked now.
         If a DOOR near the immediate path, convert to FLOOR and make a hack noise.
         """
+=======
+
+>>>>>>> 6d33e3b (Update)
         if self.thief.hack_cd > 0:
             return
         if not self.thief.path:
             return
+<<<<<<< HEAD
         # look a few steps ahead
+=======
+>>>>>>> 6d33e3b (Update)
         ahead = set(self.thief.path[:6])
         px, py = self.thief.tile()
         for tx, ty in neighbors(px, py):
             tile = self.grid[ty][tx]
             if tile == TileType.DOOR and (tx, ty) in ahead:
+<<<<<<< HEAD
                 self.grid[ty][tx] = TileType.FLOOR
+=======
+                self.grid[ty][tx] = TileType.FLOOR  # <-- "uncolor" by converting to FLOOR
+>>>>>>> 6d33e3b (Update)
                 self.blackboard.hacked.add((tx, ty))
                 self.blackboard.add_noise((tx, ty), NOISE_HACK)
                 self.thief.hack_cd = THIEF_HACK_COOLDOWN
@@ -725,6 +841,7 @@ class Game:
                         self.thief.x, self.thief.y = nx, ny
                         self.blackboard.add_noise(self.thief.tile(), NOISE_SPRINT if self.thief.sprinting else NOISE_BASE)
 
+<<<<<<< HEAD
         # --- DISCOVERY LOGIC: mark room explored; pick up loot if it's the Vault ---
         rid = self.room_id_at(self.thief.tile())
         if rid is not None and rid not in self.thief.memory.explored_room_ids:
@@ -745,6 +862,21 @@ class Game:
                 self.thief.last_plan = 0.0
 
         # win check (with loot at exit)
+=======
+        rid = self.room_id_at(self.thief.tile())
+        if rid is not None and rid not in self.thief.memory.explored_room_ids:
+            self.thief.memory.explored_room_ids.add(rid)
+            if self.thief.memory.target_room_id == rid:
+                self.thief.memory.target_room_id = None
+
+        if rid is not None:
+            room = next((r for r in self.rooms if r.id == rid), None)
+            if room and room.type == 'vault' and self.thief.carrying_value == 0:
+                self.thief.memory.vault_found = True
+                self.thief.carrying_value = room.value
+                self.thief.last_plan = 0.0
+
+>>>>>>> 6d33e3b (Update)
         if self.thief.carrying_value > 0:
             for ex in self.exits:
                 if heuristic(self.thief.tile(), ex) == 0:
@@ -782,7 +914,10 @@ class Game:
                 self.blackboard.lkp_time = self.time
                 g.facing = (max(-1, min(1, self.thief.x - g.x)), max(-1, min(1, self.thief.y - g.y)))
 
+<<<<<<< HEAD
             # local noise
+=======
+>>>>>>> 6d33e3b (Update)
             local_noise = 0.0
             for n in self.blackboard.noises:
                 d = heuristic(g.tile(), n.pos)
@@ -802,7 +937,10 @@ class Game:
                 else:
                     g.state = GuardState.PATROL
 
+<<<<<<< HEAD
             # paths
+=======
+>>>>>>> 6d33e3b (Update)
             if g.state == GuardState.PATROL:
                 if not g.path:
                     wp = self.build_patrol_targets(g)
@@ -829,7 +967,10 @@ class Game:
                     g.path = astar(self.grid, g.tile(), dest,
                                    passable=self.passable_for_guard, cost_fn=self.guard_cost, limit=8000)
 
+<<<<<<< HEAD
             # move
+=======
+>>>>>>> 6d33e3b (Update)
             if g.path:
                 if g.tile() == g.path[0]:
                     g.path.pop(0)
@@ -842,7 +983,10 @@ class Game:
                         g.facing = (max(-1, min(1, nx - g.x)), max(-1, min(1, ny - g.y)))
                         g.x, g.y = nx, ny
 
+<<<<<<< HEAD
             # capture
+=======
+>>>>>>> 6d33e3b (Update)
             if heuristic(g.tile(), self.thief.tile()) == 0:
                 self.lose = True
                 log_result_csv(SEED, "GUARDS", time.time() - self._start_wall, self._ticks, self.thief.carrying_value)
@@ -855,7 +999,11 @@ class Game:
                 t = self.grid[y][x]
                 color = DARK
                 if t == TileType.WALL:       color = MID
+<<<<<<< HEAD
                 elif t == TileType.DOOR:     color = (100, 120, 140)
+=======
+                elif t == TileType.DOOR:     color = DOOR_COL   # <--- vivid door color
+>>>>>>> 6d33e3b (Update)
                 elif t == TileType.BOX:      color = BOX_COL
                 elif t == TileType.EXIT:     color = (70, 140, 90)
                 pygame.draw.rect(s, color, (x * TILE, y * TILE, TILE - 1, TILE - 1))
@@ -922,8 +1070,13 @@ class Game:
                 pygame.draw.rect(self.screen, (180, 100, 255), (bp[0] * TILE + 4, bp[1] * TILE + 4, TILE - 8, TILE - 8), 2)
 
         info = f"ThiefValue:{self.thief.carrying_value}  Noises:{len(self.blackboard.noises)}  LKP:{self.blackboard.lkp}  Thief:{self.thief.tile()}"
+<<<<<<< HEAD
         self.screen.blit(self.font.render(info, True, LIGHT), (10, 8))
         self.screen.blit(self.font.render("[SPACE] Slow-mo  [1-5] Debug  [R] Restart  [ESC] Quit — Unknown-Vault Search", True, LIGHT),
+=======
+        self.screen.blit(self.font.render(info, True, BLUE), (10, 8))
+        self.screen.blit(self.font.render("Slow-mo = [SPACE]    Debug =[1-5]  Restart = [R]  Quit = [ESC]", True, LIGHT),
+>>>>>>> 6d33e3b (Update)
                          (10, HEIGHT - 28))
 
         if self.win:
